@@ -1,0 +1,114 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"> 
+    <title>Circumflex demo : SFML test</title>
+    <style type="text/css" media="screen">
+    /* <![CDATA[ */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: #9ba9ad;
+        }
+        
+        #container {
+            background: #FFFFFF;
+            position: relative;
+            width: 960px;
+            height: 520px;
+            top: 50%;
+            margin: -260px auto;
+        }
+    /* ]]> */
+    </style>
+</head>
+
+<body>
+    <div id="container"></div>
+</body>
+
+<script type="text/javascript" src="../src/circumflex.js"></script>
+<script type="text/javascript">
+// <![CDATA[
+
+/*
+ * Disclaimer
+ * 
+ *  The music used in this demo is "~ House of the rising sun ~ Cover"
+ *  By Lachlan Davis (Firebalt). And it is available under Creative
+ *  Common Licence on this page : http://j.mp/jhxeJW
+ */
+
+// Creates a Canvas inside the #container element.
+// If width and height are not set, the canvas takes its parent's dimensions
+var app = new cf.Window(document.getElementById('container'), 960, 520);
+
+// A simple "Loading..." text that draws on the screen
+var loadingText = new cf.Text('Loading...');
+
+// An utility object that handles loading of external resources
+var resLoader   = new cf.ResLoader;
+
+// Add resources to the loading queue
+// You may omit the second parameter if loading a local file AND running from a server
+// resLoader.Add('lens_view.jpg'); << Uses AJAX
+resLoader.Add('lens_view.jpg', "img");
+resLoader.Add('pretty_music.mp3', "audio");
+
+// Create empty variables to be setup once the loading is complete
+var sprite, text, music, clock;
+
+// What to do once all the resources are loaded
+var loaded = function() {
+    // Creates a sprite associated to 'lens_view.jpg' image
+    sprite = new cf.Sprite(cf.Image('lens_view.jpg'));
+    
+    // Set the origin of transformations (rotation for example, like this case)
+    sprite.SetOrigin(150, 150);
+    
+    // Set the position, relative to the origin
+    sprite.SetPosition(480, 260);
+    
+    // Creates a "Hello Circumflex!" text in 50px
+    text   = new cf.Text("Hello Circumflex!", 50);
+    
+    // *HTML5* Creates an audio element and play it
+    music  = new Audio("pretty_music.mp3");
+    music.loop = 'loop';
+    music.play();
+    
+    // Create a clock that counts time passed in milliseconds
+    clock = new cf.Clock();
+}
+
+// What to draw on each frame
+app.Display = function() {
+
+    // Clear the screen
+    app.Clear();
+    
+    // What to do while loading, loaded() is called when loading's complete
+    if(resLoader.Loading(loaded)) {
+        // Draw "Loading..." text
+        app.Draw(loadingText);
+        
+        // Stop the execution of the Display function
+        return;
+    }
+    
+    // Set sprite's rotation based on time
+    sprite.SetRotation(-60 * clock.GetElapsedTime()/1e3);
+    
+    // Draw the sprite
+    app.Draw(sprite);
+    
+    // Draw the text
+    app.Draw(text);
+    
+};
+
+// ]]>
+</script>
+
+</html> 
