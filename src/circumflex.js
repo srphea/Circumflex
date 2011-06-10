@@ -752,8 +752,8 @@ cf.Window = function(container, width, height) {
                };
     })();
     
-    var display = function() {
-        _this.FrameCount++;
+    function _display() {
+        //_this.FrameCount++;
 
         var prev = new Date().getTime();
 
@@ -769,11 +769,11 @@ cf.Window = function(container, width, height) {
         }
 
         if(_this.Loop) {
-	        requestAnimationFrame(display);
+	        requestAnimationFrame(_display);
         }
-    };
+    }
 
-    display();
+    _display();
 }
 
 // Inherits from cf.RenderTarget
@@ -2011,6 +2011,8 @@ cf.ResLoader.prototype.GetPercent = function() {
  *                          indicate the DOM tag of element.
  */
 cf.ResLoader.prototype.Add = function(url, extType) {
+    if(!url || url == '') return;
+    
     if(1 in arguments) {
         // console.log('Added ' + url + '//');
         this._res.push({url: url, type: extType});
@@ -2055,8 +2057,30 @@ cf.ResLoader.prototype.Start = function() {
             // Don't use onload or oncanplay, user may replace them
             if(res.type == 'img')
                 d.addEventListener('load', _load, false);
-            else
-                d.addEventListener('canplay', _load, false);
+            else {
+                var ext = /[^.]+$/.exec(res.url)[0].toLowerCase();
+                console.log(ext);
+                // Check if readable
+                if((ext == "mp3" && d.canPlayType('audio/mpeg') != "") ||
+                   (ext == 'ogg' && d.canPlayType('audio/ogg') != '') ||
+                   (ext == 'wav' && d.canPlayType('audio/wav') != '')) {
+                    var isReady = function(){
+                        if(d.readyState) {
+                            _load();
+                        }
+                        else {
+                            setTimeout(isReady, 250);
+                        }
+                    }
+                    isReady();
+                }
+                else {
+                    _load();
+                    alert(res.url + ' couldn\'t be loaded and is ignored,' +
+                          ' the application may not function properly');
+                }
+            }
+            //    d.addEventListener('canplay', _load, false);
         }
         else if(typeof res == 'string') {
             cf.Ajax.Get(res, function(xmlhttp) {

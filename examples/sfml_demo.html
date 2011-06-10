@@ -28,7 +28,7 @@
     <div id="container"></div>
 </body>
 
-<script type="text/javascript" src="../circumflex.min.js"></script>
+<script type="text/javascript" src="../src/circumflex.js"></script>
 <script type="text/javascript">
 // <![CDATA[
 
@@ -54,10 +54,10 @@ var resLoader   = new cf.ResLoader;
 // You may omit the second parameter if loading a local file AND running from a server
 // resLoader.Add('lens_view.jpg'); << Uses AJAX
 resLoader.Add('lens_view.jpg', "img");
-resLoader.Add('pretty_music.mp3', "audio");
+resLoader.Add('pretty_music.ogg', "audio");
 
 // Create empty variables to be setup once the loading is complete
-var sprite, text, music, clock;
+var sprite, text, music, clock, sprites = [];
 
 // What to do once all the resources are loaded
 var loaded = function() {
@@ -74,12 +74,19 @@ var loaded = function() {
     text   = new cf.Text("Hello Circumflex!", 50);
     
     // *HTML5* Creates an audio element and play it
-    music  = new Audio("pretty_music.mp3");
+    music  = new Audio("pretty_music.ogg");
     music.loop = 'loop';
     music.play();
     
     // Create a clock that counts time passed in milliseconds
     clock = new cf.Clock();
+    
+    for(var i = 0; i < 1900; ++i) {
+        //var spr = sprites[i];
+        sprites[i] = new cf.Sprite(cf.Image('lens_view.jpg'));
+        sprites[i].SetScale(5/30, 5/30);
+        sprites[i].SetPosition(i*60 % 960 + 5, ~~(i*6/96)*60 + 5);
+    }
 }
 
 // What to draw on each frame
@@ -105,6 +112,10 @@ app.Display = function() {
     
     // Draw the text
     app.Draw(text);
+    
+    for(var i = 0; i < 400; ++i) {
+        app.Draw(sprites[i]);
+    }
     
 };
 
