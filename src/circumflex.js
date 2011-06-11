@@ -2059,11 +2059,15 @@ cf.ResLoader.prototype.Start = function() {
                 d.addEventListener('load', _load, false);
             else {
                 var ext = /[^.]+$/.exec(res.url)[0].toLowerCase();
-                console.log(ext);
-                // Check if readable
-                if((ext == "mp3" && d.canPlayType('audio/mpeg') != "") ||
+                // Check if audio formats
+                if((ext == "mp3" && d.canPlayType('audio/mpeg') != '') ||
                    (ext == 'ogg' && d.canPlayType('audio/ogg') != '') ||
-                   (ext == 'wav' && d.canPlayType('audio/wav') != '')) {
+                   (ext == 'wav' && d.canPlayType('audio/wav') != '') ||
+                // Check for video formats
+                   (ext == 'wav' && d.canPlayType('video/mp4; codecs="avc1.42E01E, mp4a.40.2"') != '') ||
+                   (ext == 'wav' && d.canPlayType('video/ogg; codecs="theora, vorbis"') != '') ||
+                   (ext == 'wav' && d.canPlayType('video/webm; codecs="vp8, vorbis"') != '')) {
+                   // workaround: oncanplay event won't work on Firefox
                     var isReady = function(){
                         if(d.readyState) {
                             _load();
