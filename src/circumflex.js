@@ -2065,6 +2065,7 @@ cf.ResLoader.prototype.Start = function() {
                    (ext == 'wav' && d.canPlayType('audio/wav') != '') ||
                 // Check for video formats
                    (ext == 'wav' && d.canPlayType('video/mp4; codecs="avc1.42E01E, mp4a.40.2"') != '') ||
+                   (ext == 'wav' && d.canPlayType('video/mp4; codecs="avc1.4D401E, mp4a.40.2"') != '') ||
                    (ext == 'wav' && d.canPlayType('video/ogg; codecs="theora, vorbis"') != '') ||
                    (ext == 'wav' && d.canPlayType('video/webm; codecs="vp8, vorbis"') != '')) {
                    // workaround: oncanplay event won't work on Firefox
